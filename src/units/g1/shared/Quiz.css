@@ -115,7 +115,7 @@ body {
   transition: transform 0.3s, background-color 0.3s;
   position: absolute;
     left: 60%;
-    top: 63%;
+    top: 56%;
 }
 
 #submitBtn:hover {
@@ -214,7 +214,7 @@ body {
   transition: transform 0.3s, background-color 0.3s;
   position: absolute;
   left: 60%;
-    top: 63%;
+    top:56%;
 }
 
 #submitBtn:hover {
