@@ -83,118 +83,111 @@ const FeedbackWrapper = () => {
       <div className="w-full h-[2px] bg-white/30 relative z-10"></div>
 
       {/* --- 4. تطبيق نفس هيكل شريط التحكم السفلي --- */}
-     <motion.div
-  className="relative z-10 py-4 px-4 sm:px-6 bg-white border-t"
-  initial={{ y: 100, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ delay: 0.3 }}
->
-  <div className="max-w-8xl mx-auto flex items-center justify-between">
-    
-    {/* ===== يسار: Logo + Home ===== */}
-    <div className="flex items-center gap-4">
-      <img
-        src={logo}
-        alt="J1 Logo"
-        className="h-10 w-auto"
-      />
-
-      <motion.button
-        onClick={handleBackToUnits}
-        className="
-          relative z-50
-          px-4 py-2 rounded-xl border font-medium
-          transition-all duration-200 text-sm
-          flex items-center gap-2
-          border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50
-        "
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <motion.div
+        className="relative z-10 py-4 px-4 sm:px-6 bg-white border-t"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
       >
-        <Home className="w-5 h-5" />
-        <span className="hidden sm:inline text-base">Units</span>
-      </motion.button>
-    </div>
+        <div className="max-w-8xl mx-auto flex items-center justify-between">
+          {/* ===== يسار: Logo + Home ===== */}
+          <div className="flex items-center gap-4">
+            <img src={logo} alt="J1 Logo" className="h-10 w-auto" />
 
-    {/* ===== يمين: Lessons (Desktop) / Menu (Mobile) ===== */}
-    <div className="relative flex items-center gap-2">
-      
-      {/* دروس – ديسكتوب فقط */}
-      <div className="hidden xl:flex items-center relative right-40 gap-2">
-        {lessons.map((l) => (
-          <button
-            key={l.number}
-            onClick={() => handleLessonSelect(l.number)}
-            className={`
-              rounded-xl border font-medium transition-all duration-200
-              px-4 py-2 text-sm flex items-center gap-2
-              ${
-                Number(lessonId) === l.number
-                  ? `border-[#6B40C8] text-white bg-gradient-to-r ${l.color}`
-                  : "border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50"
-              }
-            `}
-          >
-            <PlayCircle className="w-5 h-5" />
-            Lesson {l.number}
-          </button>
-        ))}
-      </div>
-
-      {/* Menu – موبايل وتابلت */}
-      <div className="xl:hidden">
-        <button
-          onClick={() => setIsMenuOpen((v) => !v)}
-          className="
-            relative z-50 right-40
-            p-2 rounded-md border
-            border-[#b99cfa] text-[#6B40C8]
-            hover:bg-purple-50
+            <motion.button
+              onClick={handleBackToUnits}
+              className="
+            relative z-50
+            px-4 py-2 rounded-xl border font-medium
+            transition-all duration-200 text-sm
+            flex items-center gap-2
+            border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50
           "
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-      </div>
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Home className="w-5 h-5" />
+              <span className="hidden sm:inline text-base">Units</span>
+            </motion.button>
+          </div>
 
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="
-              absolute bottom-full right-20 mb-2 w-48
-              bg-white rounded-lg shadow-xl border z-[999]
-            "
-          >
-            <div className="p-2">
-              <p className="px-3 py-1 text-sm font-semibold text-gray-500">
-                Select Lesson
-              </p>
-
+          {/* ===== يمين: Lessons (Desktop) / Menu (Mobile) ===== */}
+          <div className="relative flex items-center gap-2">
+            {/* دروس – ديسكتوب فقط */}
+            <div className="hidden xl:flex items-center absolute right-60 gap-2">
               {lessons.map((l) => (
                 <button
                   key={l.number}
                   onClick={() => handleLessonSelect(l.number)}
-                  className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-3 transition-colors ${
-                    Number(lessonId) === l.number
-                      ? `font-bold text-white bg-gradient-to-r ${l.color}`
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  className={`whitespace-nowrap
+                rounded-xl border font-medium transition-all duration-200
+                px-4 py-2 text-sm flex items-center gap-2 
+                ${
+                  Number(lessonId) === l.number
+                    ? `border-[#6B40C8] text-white bg-gradient-to-r ${l.color}`
+                    : "border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50"
+                }
+              `}
                 >
                   <PlayCircle className="w-5 h-5" />
                   Lesson {l.number}
                 </button>
               ))}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  </div>
-</motion.div>
 
+            {/* Menu – موبايل وتابلت */}
+            <div className="xl:hidden">
+              <button
+                onClick={() => setIsMenuOpen((v) => !v)}
+                className="
+              relative z-50 right-40
+              p-2 rounded-md border
+              border-[#b99cfa] text-[#6B40C8]
+              hover:bg-purple-50
+            "
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="
+                absolute bottom-full right-20 mb-2 w-48
+                bg-white rounded-lg shadow-xl border z-[999]
+              "
+                >
+                  <div className="p-2">
+                    <p className="px-3 py-1 text-sm font-semibold text-gray-500">
+                      Select Lesson
+                    </p>
+
+                    {lessons.map((l) => (
+                      <button
+                        key={l.number}
+                        onClick={() => handleLessonSelect(l.number)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm flex items-center gap-3 transition-colors ${
+                          Number(lessonId) === l.number
+                            ? `font-bold text-white bg-gradient-to-r ${l.color}`
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        <PlayCircle className="w-5 h-5" />
+                        Lesson {l.number}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };

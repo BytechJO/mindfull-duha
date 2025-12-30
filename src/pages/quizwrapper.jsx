@@ -110,12 +110,12 @@ export default function VideoPlayerPage() {
             <motion.button
               onClick={handleBackToUnits}
               className="
-          relative z-50
-          px-4 py-2 rounded-xl border font-medium
-          transition-all duration-200 text-sm
-          flex items-center gap-2
-          border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50
-        "
+             relative z-50
+             px-4 py-2 rounded-xl border font-medium
+             transition-all duration-200 text-sm
+             flex items-center gap-2
+             border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50
+           "
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -127,20 +127,20 @@ export default function VideoPlayerPage() {
           {/* ===== يمين: Lessons (Desktop) / Menu (Mobile) ===== */}
           <div className="relative flex items-center gap-2">
             {/* دروس – ديسكتوب فقط */}
-            <div className="hidden xl:flex items-center relative right-40 gap-2">
+            <div className="hidden xl:flex items-center absolute right-80 gap-2">
               {lessons.map((l) => (
                 <button
                   key={l.number}
                   onClick={() => handleLessonSelect(l.number)}
-                  className={`
-              rounded-xl border font-medium transition-all duration-200
-              px-4 py-2 text-sm flex items-center gap-2
-              ${
-                Number(lessonId) === l.number
-                  ? `border-[#6B40C8] text-white bg-gradient-to-r ${l.color}`
-                  : "border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50"
-              }
-            `}
+                  className={`whitespace-nowrap
+                 rounded-xl border font-medium transition-all duration-200
+                 px-4 py-2 text-sm flex items-center gap-2 
+                 ${
+                   Number(lessonId) === l.number
+                     ? `border-[#6B40C8] text-white bg-gradient-to-r ${l.color}`
+                     : "border-[#b99cfa] text-[#6B40C8] hover:bg-purple-50"
+                 }
+               `}
                 >
                   <PlayCircle className="w-5 h-5" />
                   Lesson {l.number}
@@ -153,11 +153,11 @@ export default function VideoPlayerPage() {
               <button
                 onClick={() => setIsMenuOpen((v) => !v)}
                 className="
-            relative z-50 right-40
-            p-2 rounded-md border
-            border-[#b99cfa] text-[#6B40C8]
-            hover:bg-purple-50
-          "
+               relative z-50 right-40
+               p-2 rounded-md border
+               border-[#b99cfa] text-[#6B40C8]
+               hover:bg-purple-50
+             "
               >
                 <Menu className="w-5 h-5" />
               </button>
@@ -171,9 +171,9 @@ export default function VideoPlayerPage() {
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
                   className="
-              absolute bottom-full right-20 mb-2 w-48
-              bg-white rounded-lg shadow-xl border z-[999]
-            "
+                 absolute bottom-full right-20 mb-2 w-48
+                 bg-white rounded-lg shadow-xl border z-[999]
+               "
                 >
                   <div className="p-2">
                     <p className="px-3 py-1 text-sm font-semibold text-gray-500">

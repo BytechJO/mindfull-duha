@@ -83,14 +83,14 @@ export default function VideoPlayerPage() {
           {/* ===== يمين: Lessons (Desktop) / Menu (Mobile) ===== */}
           <div className="relative flex items-center gap-2">
             {/* دروس – ديسكتوب فقط */}
-            <div className="hidden xl:flex items-center relative right-40 gap-2">
+            <div className="hidden xl:flex items-center absolute right-60 gap-2">
               {lessons.map((l) => (
                 <button
                   key={l.number}
                   onClick={() => handleLessonSelect(l.number)}
-                  className={`
+                  className={`whitespace-nowrap
               rounded-xl border font-medium transition-all duration-200
-              px-4 py-2 text-sm flex items-center gap-2
+              px-4 py-2 text-sm flex items-center gap-2 
               ${
                 Number(lessonId) === l.number
                   ? `border-[#6B40C8] text-white bg-gradient-to-r ${l.color}`
