@@ -114,7 +114,7 @@ body {
   color: white;
   transition: transform 0.3s, background-color 0.3s;
   position: absolute;
-    left: 60%;
+    left: 30%;
     top: 56%;
 }
 
@@ -213,7 +213,7 @@ body {
   color: white;
   transition: transform 0.3s, background-color 0.3s;
   position: absolute;
-  left: 60%;
+  left:30%;
     top:56%;
 }
 
@@ -254,7 +254,7 @@ body {
   }
 
   #submitBtn {
-    left: 65%;
+    left: 35%;
     top: 63%;
     width: clamp(80px, 25vw, 100px);
     height: clamp(30px, 6vw, 30px);
@@ -288,7 +288,7 @@ body {
   }
 
   #submitBtn {
-    left: 65%;
+    left: 30%;
     top: 55%;
     width: clamp(80px, 25vw, 130px);
     height: clamp(30px, 6vw, 35px);
@@ -319,7 +319,7 @@ body {
   }
 
   #submitBtn {
-    left: 65% !important;
+    /* left: 65% !important; */
     top: 62%;
     width: clamp(70px, 30vw, 120px);
     height: clamp(25px, 6vw, 30px);
@@ -361,7 +361,7 @@ body {
   }
 
   #submitBtn {
-    left: 10%;
+    left: 40%;
     top: 50%;
     width: clamp(60px, 35vw, 100px);
     height: clamp(20px, 5vw, 25px);
@@ -610,7 +610,7 @@ body {
     width: 50%;
 }
   #submitBtn {
-    left: 10%;
+    left: 40%;
     top: 70%;
     width: clamp(60px, 35vw, 100px);
     height: clamp(20px, 5vw, 25px);
