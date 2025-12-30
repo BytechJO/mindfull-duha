@@ -255,7 +255,7 @@ body {
 
   #submitBtn {
     left: 35%;
-    top: 63%;
+    top: 58%;
     width: clamp(80px, 25vw, 100px);
     height: clamp(30px, 6vw, 30px);
   }
@@ -629,14 +629,14 @@ body {
   }
 
   .skip-btn {
-    left: 65%;
-    bottom: 45%;
-    width: 60px;
+  left: 80%;
+        bottom: 18%;
+        width: 60px;
   }
 
   .try-btn {
-    bottom: 40%;
-    left: 80%;
+  bottom: 17%;
+        left: 7%;
   }
 }
 
@@ -679,7 +679,7 @@ body {
         width: 92px;
         height: 27px;
         font-size: 14px;
-        top: 80%;
+        top: 83%;
     }
 
   .skip-btn,
