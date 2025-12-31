@@ -181,7 +181,7 @@ export const StoryPage = () => {
     ],
 
     3: [
-      { bottom: '65%', left: '10%'},
+      { bottom: '65%', left: '10%' },
       { top: '20%', left: '5%' },
       { top: '10%', left: '55%', isFlipped: true },
     ],
@@ -400,65 +400,17 @@ export const StoryPage = () => {
   }, [currentVideo, isPlaying, playbackSpeed]);
   const handlePrevious = () => {
     setCurrentVideo(prev => (prev > 0 ? prev - 1 : videos.length - 1));
+    setShowBanner(false);
   };
   const handleNext = () => {
     if (currentVideo === videos.length - 1) {
       navigate(`/unit/${unitId}/lesson/${lessonId}/quiz`);
     } else {
       setCurrentVideo(prev => prev + 1);
+      setShowBanner(false);
     }
   };
-  const handleTextSelection = () => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
 
-    const selectedText = selection.toString().trim();
-    if (!selectedText) return;
-
-    // الكلمات الصحيحة فقط
-    const allCorrectWords = ["thank", "you","shows", "that", "care"];
-
-    // تقسيم النص المحدد لكلمات
-    const wordsInSelection = selectedText
-      .split(/\s+/)
-      .map(word => word.replace(/[.,?!]/g, '').toLowerCase());
-
-    // التحقق: هل كل الكلمات المحددة صحيحة؟
-    const hasWrongWords = wordsInSelection.some(word =>
-      word && !allCorrectWords.includes(word)
-    );
-
-    // إذا في كلمات غلط
-    if (hasWrongWords) {
-      setShowWrongFeedback(true);
-      setTimeout(() => setShowWrongFeedback(false), 2000);
-      selection.removeAllRanges();
-      return;
-    }
-
-    // التحقق من الكلمات الصحيحة في التحديد
-    const correctWordsInSelection = wordsInSelection.filter(word =>
-      allCorrectWords.includes(word)
-    );
-
-    if (correctWordsInSelection.length > 0) {
-      setSelectedWords(prev => {
-        const newWords = [...new Set([...prev, ...correctWordsInSelection])];
-        const allCorrectSelected = allCorrectWords.every(correctWord =>
-          newWords.some(w => w.toLowerCase() === correctWord)
-        );
-
-        if (allCorrectSelected && newWords.length === allCorrectWords.length) {
-          setShowFeedback(true);
-          setTimeout(() => setShowFeedback(false), 2000);
-        }
-
-        return newWords;
-      });
-    }
-
-    selection.removeAllRanges();
-  };
   const togglePlay = () => {
     if (selectedWords.length === 5) {
       handleNext();
@@ -550,6 +502,91 @@ export const StoryPage = () => {
   }, [currentVideo, videos.length, navigate, unitId, lessonId, autoPlayNext]);
 
 
+
+  const handleWordClick = (word) => {
+    const cleanWord = word.toLowerCase().replace(/[.,?!]/g, "");
+    const allCorrectWords = [
+      "thank", "you","shows", "that", "care"
+    ];
+    if (!allCorrectWords.includes(cleanWord)) {
+      setShowWrongFeedback(true);
+      setTimeout(() => setShowWrongFeedback(false), 2000);
+      return;
+    }
+
+    setSelectedWords(prev => {
+      const newWords = [...new Set([...prev, cleanWord])];
+
+      const allCorrectSelected = allCorrectWords.every(correctWord =>
+        newWords.includes(correctWord)
+      );
+
+      if (allCorrectSelected) {
+        setShowFeedback(true);
+        setShowBanner(false);
+        setTimeout(() => {
+          setShowBanner(false);
+          setShowFeedback(false);
+          handleNext();
+        }, 2000);
+      }
+
+      return newWords;
+    });
+  };
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+
+    const allCorrectWords = ["thank", "you","shows", "that", "care"];
+
+    const wordsInSelection = selectedText
+      .split(/\s+/)
+      .map(word => word.replace(/[.,?!]/g, '').toLowerCase());
+
+    const hasWrongWords = wordsInSelection.some(word =>
+      word && !allCorrectWords.includes(word)
+    );
+
+    if (hasWrongWords) {
+      setShowWrongFeedback(true);
+      setTimeout(() => setShowWrongFeedback(false), 2000);
+      selection.removeAllRanges();
+      return;
+    }
+
+    const correctWordsInSelection = wordsInSelection.filter(word =>
+      allCorrectWords.includes(word)
+    );
+
+    if (correctWordsInSelection.length > 0) {
+      setSelectedWords(prev => {
+        const newWords = [...new Set([...prev, ...correctWordsInSelection])];
+        const allCorrectSelected = allCorrectWords.every(correctWord =>
+          newWords.some(w => w.toLowerCase() === correctWord)
+        );
+
+        // *** بداية التعديل ***
+        if (allCorrectSelected && newWords.length === allCorrectWords.length) {
+          setShowFeedback(true);
+          setShowBanner(false);
+          setTimeout(() => {
+            setShowBanner(false);
+            setShowFeedback(false);
+            handleNext();
+          }, 2000);
+        }
+
+        return newWords;
+      });
+    }
+
+    selection.removeAllRanges();
+  };
+
   return (
     <div className="story-page-container">
       {isLoading && (
@@ -620,6 +657,7 @@ export const StoryPage = () => {
                     return (
                       <span
                         key={index}
+                        onClick={() => handleWordClick(word.text)}
                         className={`word-span 
               ${isHighlighted && textHighlight ? 'active-word' : ''} 
               ${isSelected ? 'selected-word' : ''}`}
@@ -630,16 +668,7 @@ export const StoryPage = () => {
                   })}
                 </p>
 
-                {selectedWords.length === 5 && (
-                  <div className="try-again-container">
-                    <button
-                      onClick={handleTryAgain}
-                      className="tryyflip"
-                    >
-                      Try Again
-                    </button>
-                  </div>
-                )}
+                
               </div>
             </div>
           )}

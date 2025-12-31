@@ -3,7 +3,7 @@ import { AnimatedBackground } from "./AnimatedBackground";
 import { AnimatedCharacter } from "./AnimatedCharacter";
 import { BookOpen, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 // بيانات الوحدات
 const units = [
@@ -46,10 +46,13 @@ const lessonContent = [
   { name: 'Self-Assessment', path: 'feedback', icon: FeedbackIcon },
 ];
 
+
+
 export default function UnitsPage() {
   const navigate = useNavigate();
   const [openUnitId, setOpenUnitId] = useState(null);
   const [openLessonId, setOpenLessonId] = useState(null);
+  const menuRef = useRef(null);
 
   const handleUnitClick = (unitId) => {
     setOpenUnitId(openUnitId === unitId ? null : unitId);
@@ -61,6 +64,20 @@ export default function UnitsPage() {
     setOpenLessonId(openLessonId === lessonId ? null : lessonId);
   };
 
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setOpenUnitId(null);
+      setOpenLessonId(null);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
   return (
     <div className="max-h-full w-full flex flex-col items-center justify-center p-4 sm:p-20 relative ">
       <AnimatedBackground />
@@ -76,7 +93,7 @@ export default function UnitsPage() {
         Choose a Unit
       </motion.h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 max-w-4xl w-full relative z-10">
+      <div ref={menuRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 max-w-4xl w-full relative z-10">
         {units.map((unit) => (
           <motion.div
             key={unit.id}

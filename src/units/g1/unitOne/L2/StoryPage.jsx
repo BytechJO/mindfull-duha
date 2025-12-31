@@ -432,69 +432,17 @@ export const StoryPage = () => {
   }, [currentVideo, isPlaying, playbackSpeed]);
   const handlePrevious = () => {
     setCurrentVideo(prev => (prev > 0 ? prev - 1 : videos.length - 1));
+    setShowBanner(false);
   };
   const handleNext = () => {
     if (currentVideo === videos.length - 1) {
       navigate(`/unit/${unitId}/lesson/${lessonId}/quiz`);
     } else {
       setCurrentVideo(prev => prev + 1);
+      setShowBanner(false);
     }
   };
-  const handleTextSelection = () => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
-
-    const selectedText = selection.toString().trim();
-    if (!selectedText) return;
-
-    // الكلمات الصحيحة فقط
-    const allCorrectWords = ["she", "takes","a","deep", "breath","and" ,"counts","to", "ten"];
-
-// تقسيم النص المحدد لكلمات
-const wordsInSelection = selectedText
-  .split(/\s+/)
-  .map(word => word.replace(/[.,?!]/g, '').toLowerCase());
-
-// التحقق: هل كل الكلمات المحددة صحيحة؟
-const hasWrongWords = wordsInSelection.some(word =>
-  word && !allCorrectWords.includes(word)
-);
-
-// إذا في كلمات غلط
-if (hasWrongWords) {
-  setShowWrongFeedback(true);
-  setTimeout(() => setShowWrongFeedback(false), 2000);
-  selection.removeAllRanges();
-  return;
-}
-
-// التحقق من الكلمات الصحيحة في التحديد
-const correctWordsInSelection = wordsInSelection.filter(word =>
-  allCorrectWords.includes(word)
-);
-
-if (correctWordsInSelection.length > 0) {
-  setSelectedWords(prev => {
-    // إضافة الكلمات الجديدة بدون تكرار
-    const newWords = [...new Set([...prev, ...correctWordsInSelection])];
-
-    // التحقق إذا تم اختيار كل الكلمات الصحيحة
-    const allCorrectSelected = allCorrectWords.every(correctWord =>
-      newWords.some(w => w.toLowerCase() === correctWord)
-    );
-
-    if (allCorrectSelected && newWords.length === allCorrectWords.length) {
-      setShowFeedback(true);
-      setTimeout(() => setShowFeedback(false), 2000);
-    }
-
-    return newWords;
-  });
-}
-
-selection.removeAllRanges();
-  };
-const togglePlay = () => {
+  const togglePlay = () => {
     if (selectedWords.length === 9) {
       handleNext();
       return;
@@ -510,92 +458,174 @@ const togglePlay = () => {
 
     setIsPlaying(!isPlaying);
   };
-const toggleMute = () => {
-  setIsMuted(prev => !prev);
-};
-const selectPlaybackSpeed = (speed) => {
-  setPlaybackSpeed(speed);
-  if (videoRef.current) {
-    videoRef.current.playbackRate = speed;
-  }
-  setShowSpeedMenu(false);
-};
-const handleVolumeChange = (e) => {
-  const newVolume = parseFloat(e.target.value);
-  setVolume(newVolume);
-  if (videoRef.current) {
-    videoRef.current.volume = newVolume;
-  }
-  setIsMuted(newVolume === 0);
-};
-const toggleFullscreen = () => {
-  const container = fullscreenContainerRef.current;
-  if (!container) return;
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+  };
+  const selectPlaybackSpeed = (speed) => {
+    setPlaybackSpeed(speed);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speed;
+    }
+    setShowSpeedMenu(false);
+  };
+  const handleVolumeChange = (e) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+    }
+    setIsMuted(newVolume === 0);
+  };
+  const toggleFullscreen = () => {
+    const container = fullscreenContainerRef.current;
+    if (!container) return;
 
-  if (!document.fullscreenElement) {
-    container.requestFullscreen().catch(err => {
-      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-    });
-  } else {
-    document.exitFullscreen();
-  }
-};
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      settingsPopupRef.current &&
-      !settingsPopupRef.current.contains(event.target)
-    ) {
-      setShowSettingsPopup(false);
-
+    if (!document.fullscreenElement) {
+      container.requestFullscreen().catch(err => {
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
     }
   };
 
-  if (showSettingsPopup) {
-    document.addEventListener('mousedown', handleClickOutside);
-  }
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        settingsPopupRef.current &&
+        !settingsPopupRef.current.contains(event.target)
+      ) {
+        setShowSettingsPopup(false);
 
-  return () =>
-    document.removeEventListener('mousedown', handleClickOutside);
-}, [showSettingsPopup]);
+      }
+    };
 
-
-const handleEnded = useCallback(() => {
-  if (currentVideo === 2) {
-    setShowBanner(true);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = videoRef.current.duration;
+    if (showSettingsPopup) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-  }
-  else if (currentVideo === videos.length - 1) {
-    navigate(`/unit/${unitId}/lesson/${lessonId}/quiz`);
-  }
-  else {
-    setShowBanner(false);
-    if (autoPlayNext) {
-      setCurrentVideo(prev => (prev < videos.length - 1 ? prev + 1 : prev));
-    } else {
+
+    return () =>
+      document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSettingsPopup]);
+
+
+  const handleEnded = useCallback(() => {
+    if (currentVideo === 2) {
+      setShowBanner(true);
       if (videoRef.current) {
         videoRef.current.pause();
+        videoRef.current.currentTime = videoRef.current.duration;
       }
     }
-  }
-}, [currentVideo, videos.length, navigate, unitId, lessonId, autoPlayNext]);
+    else if (currentVideo === videos.length - 1) {
+      navigate(`/unit/${unitId}/lesson/${lessonId}/quiz`);
+    }
+    else {
+      setShowBanner(false);
+      if (autoPlayNext) {
+        setCurrentVideo(prev => (prev < videos.length - 1 ? prev + 1 : prev));
+      } else {
+        if (videoRef.current) {
+          videoRef.current.pause();
+        }
+      }
+    }
+  }, [currentVideo, videos.length, navigate, unitId, lessonId, autoPlayNext]);
 
+  const handleWordClick = (word) => {
+    const cleanWord = word.toLowerCase().replace(/[.,?!]/g, "");
+    const allCorrectWords = [
+      "she", "takes","a","deep", "breath","and" ,"counts","to", "ten"
+    ];
+    if (!allCorrectWords.includes(cleanWord)) {
+      setShowWrongFeedback(true);
+      setTimeout(() => setShowWrongFeedback(false), 2000);
+      return;
+    }
 
-return (
-  <div className="story-page-container">
-    {isLoading && (
-      <div className="loading-overlay">
-        <div className="spinner"></div>
-      </div>
-    )}
-    <div className="w-full max-w-6xl">
-      <div ref={fullscreenContainerRef} className="video-wrapper">
+    setSelectedWords(prev => {
+      const newWords = [...new Set([...prev, cleanWord])];
 
-        <video
+      const allCorrectSelected = allCorrectWords.every(correctWord =>
+        newWords.includes(correctWord)
+      );
+
+      if (allCorrectSelected) {
+        setShowFeedback(true);
+        setShowBanner(false);
+        setTimeout(() => {
+          setShowBanner(false);
+          setShowFeedback(false);
+          handleNext();
+        }, 2000);
+      }
+
+      return newWords;
+    });
+  };
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+
+    const allCorrectWords = ["she", "takes","a","deep", "breath","and" ,"counts","to", "ten"];
+
+    const wordsInSelection = selectedText
+      .split(/\s+/)
+      .map(word => word.replace(/[.,?!]/g, '').toLowerCase());
+
+    const hasWrongWords = wordsInSelection.some(word =>
+      word && !allCorrectWords.includes(word)
+    );
+
+    if (hasWrongWords) {
+      setShowWrongFeedback(true);
+      setTimeout(() => setShowWrongFeedback(false), 2000);
+      selection.removeAllRanges();
+      return;
+    }
+
+    const correctWordsInSelection = wordsInSelection.filter(word =>
+      allCorrectWords.includes(word)
+    );
+
+    if (correctWordsInSelection.length > 0) {
+      setSelectedWords(prev => {
+        const newWords = [...new Set([...prev, ...correctWordsInSelection])];
+        const allCorrectSelected = allCorrectWords.every(correctWord =>
+          newWords.some(w => w.toLowerCase() === correctWord)
+        );
+
+        // *** بداية التعديل ***
+        if (allCorrectSelected && newWords.length === allCorrectWords.length) {
+          setShowFeedback(true);
+          setShowBanner(false);
+          setTimeout(() => {
+            setShowBanner(false);
+            setShowFeedback(false);
+            handleNext();
+          }, 2000);
+        }
+
+        return newWords;
+      });
+    }
+
+    selection.removeAllRanges();
+  };
+  return (
+    <div className="story-page-container">
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
+      <div className="w-full max-w-6xl">
+        <div ref={fullscreenContainerRef} className="video-wrapper">
+
+          <video
             ref={videoRef}
             className={`
     w-full
@@ -612,299 +642,291 @@ return (
             Your browser does not support the video tag.
           </video>
 
-        {showWrongFeedback && currentVideo === 2 && showBanner && (
-          <div className="wrong-feedback">
-            Try Again! ❌
-          </div>
-        )}
+          {showWrongFeedback && currentVideo === 2 && showBanner && (
+            <div className="wrong-feedback">
+              Try Again! ❌
+            </div>
+          )}
 
-        {showFeedback && (
-          <div className="feedback-popup">
-            Good Job! 👍
-          </div>
-        )}
+          {showFeedback && (
+            <div className="feedback-popup">
+              Good Job! 👍
+            </div>
+          )}
 
-        {currentVideo === 2 && showBanner && (
-          <div className={`instruction-banner show ${isFullscreen ? 'fullscreen-banner' : ''}`}>
-            <p style={{ fontSize: '1.8em', textAlign: 'left' }}>
-              Highlight how Nessie calmed down when
-            </p>
-            <p style={{ fontSize: '1.8em', textAlign: 'left' }}>
-              she felt upset.
-            </p>
-          </div>
-        )}
+          {currentVideo === 2 && showBanner && (
+            <div className={`instruction-banner show ${isFullscreen ? 'fullscreen-banner' : ''}`}>
+              <p style={{ fontSize: '1.8em', textAlign: 'left' }}>
+                Highlight how Nessie calmed down when
+              </p>
+              <p style={{ fontSize: '1.8em', textAlign: 'left' }}>
+                she felt upset.
+              </p>
+            </div>
+          )}
 
-        {showBubble && showSubtitles && activeSubtitle && activeSubtitle.words && (
-          <div className="subtitle-container" style={cloudPositions[currentVideo][0]}>
+          {showBubble && showSubtitles && activeSubtitle && activeSubtitle.words && (
+            <div className="subtitle-container" style={cloudPositions[currentVideo][0]}>
 
-            <div className={`bubble-cloud animate__animated animate__fadeIn ${cloudPositions[currentVideo]?.isFlipped ? 'flipped' : ''}`}>
-              <p
-                onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}
-                style={{ userSelect: 'text', cursor: 'text' }}
-              >
-                {activeSubtitle.words.map((word, index) => {
-                  const isHighlighted = currentTime >= word.start && currentTime < word.end;
-                  const cleanWord = word.text.replace(/[.,?!]/g, '');
-                  const isSelected = selectedWords.some(w =>
-                    w.toLowerCase() === cleanWord.toLowerCase()
-                  );
+              <div className={`bubble-cloud animate__animated animate__fadeIn ${cloudPositions[currentVideo]?.isFlipped ? 'flipped' : ''}`}>
+                <p
+                  onMouseDown={handleMouseDown}
+                  onMouseUp={handleMouseUp}
+                  style={{ userSelect: 'text', cursor: 'text' }}
+                >
+                  {activeSubtitle.words.map((word, index) => {
+                    const isHighlighted = currentTime >= word.start && currentTime < word.end;
+                    const cleanWord = word.text.replace(/[.,?!]/g, '');
+                    const isSelected = selectedWords.some(w =>
+                      w.toLowerCase() === cleanWord.toLowerCase()
+                    );
 
-                  return (
-                    <span
-                      key={index}
-                      className={`word-span 
+                    return (
+                      <span
+                        key={index}
+                        onClick={() => handleWordClick(word.text)}
+                        className={`word-span 
       ${isHighlighted && textHighlight ? 'active-word' : ''} 
       ${isSelected ? 'selected-word' : ''}`}
-                    >
-                      {word.text}{' '}
-                    </span>
-                  );
-                })}
-              </p>
+                      >
+                        {word.text}{' '}
+                      </span>
+                    );
+                  })}
+                </p>
 
-              {selectedWords.length === 9 && (
-                <div className="try-again-container">
-                  <button
-                    onClick={handleTryAgain}
-                    className="tryyflip"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              )}
+               
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {showCaption && extraBubble && extraBubble.words && (
-          <div
-            className="subtitle-container"
-            style={{ bottom: '0%', left: '50%', transform: 'translateX(-50%)', zIndex: 101 }}
-          >
-            <div className="extra-cloud animate__animated animate__fadeIn">
-              <p>
-                {extraBubble.words.map((word, index) => {
-                  const isHighlighted = currentTime >= word.start && currentTime < word.end;
-                  return (
-                    <span
-                      key={index}
-                      className={`word-span ${isHighlighted && narrationHighlight ? 'active-word' : ''}`}
-                    >
-                      {word.text}{' '}
-                    </span>
-                  );
-                })}
-              </p>
+          {showCaption && extraBubble && extraBubble.words && (
+            <div
+              className="subtitle-container"
+              style={{ bottom: '0%', left: '50%', transform: 'translateX(-50%)', zIndex: 101 }}
+            >
+              <div className="extra-cloud animate__animated animate__fadeIn">
+                <p>
+                  {extraBubble.words.map((word, index) => {
+                    const isHighlighted = currentTime >= word.start && currentTime < word.end;
+                    return (
+                      <span
+                        key={index}
+                        className={`word-span ${isHighlighted && narrationHighlight ? 'active-word' : ''}`}
+                      >
+                        {word.text}{' '}
+                      </span>
+                    );
+                  })}
+                </p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="video-overlay" />
-        <div className="controls-container">
+          <div className="video-overlay" />
+          <div className="controls-container">
 
-          <div className="controlbbtn">
-            <button onClick={handlePrevious} className="control-btn left-nav-btn">
-              <ChevronLeft className="w-8 h-8" />
-            </button>
+            <div className="controlbbtn">
+              <button onClick={handlePrevious} className="control-btn left-nav-btn">
+                <ChevronLeft className="w-8 h-8" />
+              </button>
 
-            <button onClick={handleNext} className="control-btn right-nav-btn">
-              <ChevronRight className="w-8 h-8" />
-            </button>
-          </div>
+              <button onClick={handleNext} className="control-btn right-nav-btn">
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            </div>
 
-          <div className="controls-wrapper-new">
-            <div className="controls-row">
-              <div className="controls-group-left">
+            <div className="controls-wrapper-new">
+              <div className="controls-row">
+                <div className="controls-group-left">
 
-                <div className="settings-container">
-                  <button
-                    onClick={() => setShowSettingsPopup(prev => !prev)}
-                    className="control-btn settings-btn"
-                    title="Settings"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="control-label">Settings</span>
-                  </button>
+                  <div className="settings-container">
+                    <button
+                      onClick={() => setShowSettingsPopup(prev => !prev)}
+                      className="control-btn settings-btn"
+                      title="Settings"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="control-label">Settings</span>
+                    </button>
 
-                  {showSettingsPopup && (
-                    <>
-                      {/* 1. الخلفية الضبابية (Overlay) */}
-                      <div className="settings-overlay" onClick={() => setShowSettingsPopup(false)}></div>
+                    {showSettingsPopup && (
+                      <>
+                        {/* 1. الخلفية الضبابية (Overlay) */}
+                        <div className="settings-overlay" onClick={() => setShowSettingsPopup(false)}></div>
 
-                      {/* 2. حاوية النافذة لتوسيطها */}
-                      <div className="settings-popup-container">
-                        <div ref={settingsPopupRef} className="settings-popup">
-                          <button
-                            onClick={() => setShowSettingsPopup(false)}
-                            className="close-popup-btn"
-                          >
-                            ×
-                          </button>
+                        {/* 2. حاوية النافذة لتوسيطها */}
+                        <div className="settings-popup-container">
+                          <div ref={settingsPopupRef} className="settings-popup">
+                            <button
+                              onClick={() => setShowSettingsPopup(false)}
+                              className="close-popup-btn"
+                            >
+                              ×
+                            </button>
 
-                          <h3>Settings</h3>
+                            <h3>Settings</h3>
 
-                          <div className="settings-options-grid">
-                            <div className="setting-item">
-                              <span className="setting-label">Conversation Caption</span>
-                              <label className="toggle-switch">
-                                <input
-                                  type="checkbox"
-                                  checked={showSubtitles}
-                                  onChange={() => setShowSubtitles(!showSubtitles)}
-                                />
-                                <span className="toggle-slider"></span>
-                              </label>
-                            </div>
+                            <div className="settings-options-grid">
+                              <div className="setting-item">
+                                <span className="setting-label">Conversation Caption</span>
+                                <label className="toggle-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={showSubtitles}
+                                    onChange={() => setShowSubtitles(!showSubtitles)}
+                                  />
+                                  <span className="toggle-slider"></span>
+                                </label>
+                              </div>
 
-                            <div className="setting-item">
-                              <span className="setting-label">Text Highlight</span>
-                              <label className="toggle-switch">
-                                <input
-                                  type="checkbox"
-                                  checked={textHighlight}
-                                  onChange={() => setTextHighlight(!textHighlight)}
-                                />
-                                <span className="toggle-slider"></span>
-                              </label>
-                            </div>
+                              <div className="setting-item">
+                                <span className="setting-label">Text Highlight</span>
+                                <label className="toggle-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={textHighlight}
+                                    onChange={() => setTextHighlight(!textHighlight)}
+                                  />
+                                  <span className="toggle-slider"></span>
+                                </label>
+                              </div>
 
-                            <div className="setting-item">
-                              <span className="setting-label">Narration</span>
-                              <label className="toggle-switch">
-                                <input
-                                  type="checkbox"
-                                  checked={showCaption}
-                                  onChange={() => setShowCaption(!showCaption)}
-                                />
-                                <span className="toggle-slider"></span>
-                              </label>
-                            </div>
+                              <div className="setting-item">
+                                <span className="setting-label">Narration</span>
+                                <label className="toggle-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={showCaption}
+                                    onChange={() => setShowCaption(!showCaption)}
+                                  />
+                                  <span className="toggle-slider"></span>
+                                </label>
+                              </div>
 
-                            <div className="setting-item">
-                              <span className="setting-label">Narration Highlight</span>
-                              <label className="toggle-switch">
-                                <input
-                                  type="checkbox"
-                                  checked={narrationHighlight}
-                                  onChange={() => setNarrationHighlight(!narrationHighlight)}
-                                />
-                                <span className="toggle-slider"></span>
-                              </label>
-                            </div>
+                              <div className="setting-item">
+                                <span className="setting-label">Narration Highlight</span>
+                                <label className="toggle-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={narrationHighlight}
+                                    onChange={() => setNarrationHighlight(!narrationHighlight)}
+                                  />
+                                  <span className="toggle-slider"></span>
+                                </label>
+                              </div>
 
-                            <div className="setting-item">
-                              <span className="setting-label">Auto Page Turn</span>
-                              <label className="toggle-switch">
-                                <input
-                                  type="checkbox"
-                                  checked={autoPlayNext}
-                                  onChange={() => setAutoPlayNext(!autoPlayNext)}
-                                />
-                                <span className="toggle-slider"></span>
-                              </label>
+                              <div className="setting-item">
+                                <span className="setting-label">Auto Page Turn</span>
+                                <label className="toggle-switch">
+                                  <input
+                                    type="checkbox"
+                                    checked={autoPlayNext}
+                                    onChange={() => setAutoPlayNext(!autoPlayNext)}
+                                  />
+                                  <span className="toggle-slider"></span>
+                                </label>
+                              </div>
                             </div>
                           </div>
                         </div>
+                      </>
+                    )}
+                  </div>
+
+                  <div
+                    className="volume-control"
+                    onMouseEnter={() => setShowVolumeSlider(true)}
+                    onMouseLeave={() => setShowVolumeSlider(false)}
+                  >
+                    <button onClick={toggleMute} className="control-btn">
+                      {isMuted || volume === 0 ? (
+                        <VolumeX className="w-6 h-6" />
+                      ) : (
+                        <Volume2 className="w-6 h-6" />
+                      )}
+                    </button>
+                    {showVolumeSlider && (
+                      <div className="volume-slider-container">
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={volume}
+                          onChange={handleVolumeChange}
+                          className="volume-slider"
+                          orient="vertical"
+                        />
                       </div>
-                    </>
-                  )}
+                    )}
+                  </div>
+
+                  <div className="speed-control-container">
+                    <button
+                      onClick={() => setShowSpeedMenu(prev => !prev)}
+                      className="control-btn speed-btn"
+                      title="Playback Speed"
+                    >
+                      <span className="speed-label">{playbackSpeed}x</span>
+                    </button>
+
+                    {showSpeedMenu && (
+                      <ul className="speed-dropdown-list">
+                        {availableSpeeds.map((speed) => (
+                          <li
+                            key={speed}
+                            onClick={() => selectPlaybackSpeed(speed)}
+                            className={playbackSpeed === speed ? 'active-speed' : ''}
+                          >
+                            {speed}x
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
 
-                <div
-                  className="volume-control"
-                  onMouseEnter={() => setShowVolumeSlider(true)}
-                  onMouseLeave={() => setShowVolumeSlider(false)}
-                >
-                  <button onClick={toggleMute} className="control-btn">
-                    {isMuted || volume === 0 ? (
-                      <VolumeX className="w-6 h-6" />
+                <div className="controls-group-center">
+                  <button onClick={togglePlay} className="control-btn play-btn">
+                    {isPlaying ? (
+                      <Pause className="w-12 h-12" fill="white" />
                     ) : (
-                      <Volume2 className="w-6 h-6" />
+                      <Play className="w-12 h-12" fill="white" />
                     )}
                   </button>
-                  {showVolumeSlider && (
-                    <div className="volume-slider-container">
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={volume}
-                        onChange={handleVolumeChange}
-                        className="volume-slider"
-                        orient="vertical"
-                      />
-                    </div>
-                  )}
                 </div>
 
-                <div className="speed-control-container">
-                  <button
-                    onClick={() => setShowSpeedMenu(prev => !prev)}
-                    className="control-btn speed-btn"
-                    title="Playback Speed"
-                  >
-                    <span className="speed-label">{playbackSpeed}x</span>
+                <div className="controls-group-right">
+                  <button onClick={toggleFullscreen} className="control-btn">
+                    {isFullscreen ? (
+                      <Minimize2 className="w-6 h-6" />
+                    ) : (
+                      <Maximize2 className="w-6 h-6" />
+                    )}
                   </button>
-
-                  {showSpeedMenu && (
-                    <ul className="speed-dropdown-list">
-                      {availableSpeeds.map((speed) => (
-                        <li
-                          key={speed}
-                          onClick={() => selectPlaybackSpeed(speed)}
-                          className={playbackSpeed === speed ? 'active-speed' : ''}
-                        >
-                          {speed}x
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
-              </div>
-
-              <div className="controls-group-center">
-                <button onClick={togglePlay} className="control-btn play-btn">
-                  {isPlaying ? (
-                    <Pause className="w-12 h-12" fill="white" />
-                  ) : (
-                    <Play className="w-12 h-12" fill="white" />
-                  )}
-                </button>
-              </div>
-
-              <div className="controls-group-right">
-                <button onClick={toggleFullscreen} className="control-btn">
-                  {isFullscreen ? (
-                    <Minimize2 className="w-6 h-6" />
-                  ) : (
-                    <Maximize2 className="w-6 h-6" />
-                  )}
-                </button>
               </div>
             </div>
+
           </div>
 
-        </div>
-
-        <div className="progress-indicator-container">
-          {videos.map((_, index) => (
-            <div
-              key={index}
-              className={`progress-dot ${index === currentVideo ? 'active' : ''}`}
-            />
-          ))}
+          <div className="progress-indicator-container">
+            {videos.map((_, index) => (
+              <div
+                key={index}
+                className={`progress-dot ${index === currentVideo ? 'active' : ''}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 };
 export default StoryPage;
