@@ -64,7 +64,7 @@ export const QuizPage = () => {
     navigate(`/unit/${unitId}/lesson/${lessonId}/feedBack`);
   };
 
-   const handleTryAgain = () => {
+  const handleTryAgain = () => {
     setAnswers({ q1: null, q2: null, q3: null });
     setResults({ q1: null, q2: null, q3: null });
     setShowSkip(true);
@@ -80,73 +80,74 @@ export const QuizPage = () => {
           <img src={Q1Image} alt="Background" className="bg-img" />
 
           <div className="content">
+            
+            <div className="questions">
+              {/* Q1 */}
+              <div className="Q1">
+                <span>Where does the story take place?</span>
+                <ul>
+                  <li>
+                    <p>  At school</p>
+                    <input type="radio" name="q1" value="0" onChange={handleChange} />
+                    {renderAnswerGif("q1", "0")}
+                  </li>
+                  <li>
+                    <p> At home</p>
+                    <input type="radio" name="q1" value="1" onChange={handleChange} />
+                    {renderAnswerGif("q1", "1")}
+                  </li>
+                  <li>
+                    <p>In the garden</p>
+                    <input type="radio" name="q1" value="2" onChange={handleChange} />
+                    {renderAnswerGif("q1", "2")}
+                  </li>
+                </ul>
+              </div>
 
-            {/* Q1 */}
-            <div className="Q1">
-              <span>Where does the story take place?</span>
-              <ul>
-                <li>
-                <p>  At school</p>
-                  <input type="radio" name="q1" value="0" onChange={handleChange} />
-                  {renderAnswerGif("q1", "0")}
-                </li>
-                <li>
-                 <p> At home</p>
-                  <input type="radio" name="q1" value="1" onChange={handleChange} />
-                  {renderAnswerGif("q1", "1")}
-                </li>
-                <li>
-                  <p>In the garden</p>
-                  <input type="radio" name="q1" value="2" onChange={handleChange} />
-                  {renderAnswerGif("q1", "2")}
-                </li>
-              </ul>
+              {/* Q2 */}
+              <div className="Q2">
+                <span>It is ___________ to use bad words.</span>
+                <ul>
+                  <li>
+                    <p> Wrong</p>
+                    <input type="radio" name="q2" value="0" onChange={handleChange} />
+                    {renderAnswerGif("q2", "0")}
+                  </li>
+                  <li>
+                    <p>Right</p>
+                    <input type="radio" name="q2" value="1" onChange={handleChange} />
+                    {renderAnswerGif("q2", "1")}
+                  </li>
+                  <li>
+                    <p> Okay</p>
+                    <input type="radio" name="q2" value="2" onChange={handleChange} />
+                    {renderAnswerGif("q2", "2")}
+                  </li>
+                </ul>
+              </div>
+
+              {/* Q3 */}
+              <div className="Q3">
+                <span>What does it mean to use good language?</span>
+                <ul>
+                  <li>
+                    <p> Using rude words</p>
+                    <input type="radio" name="q3" value="0" onChange={handleChange} />
+                    {renderAnswerGif("q3", "0")}
+                  </li>
+                  <li>
+                    <p>Being quiet</p>
+                    <input type="radio" name="q3" value="1" onChange={handleChange} />
+                    {renderAnswerGif("q3", "1")}
+                  </li>
+                  <li>
+                    <p> Using nice words</p>
+                    <input type="radio" name="q3" value="2" onChange={handleChange} />
+                    {renderAnswerGif("q3", "2")}
+                  </li>
+                </ul>
+              </div>
             </div>
-
-            {/* Q2 */}
-            <div className="Q2">
-              <span>It is ___________ to use bad words.</span>
-              <ul>
-                <li>
-                 <p> Wrong</p>
-                  <input type="radio" name="q2" value="0" onChange={handleChange} />
-                  {renderAnswerGif("q2", "0")}
-                </li>
-                <li>
-                 <p>Right</p> 
-                  <input type="radio" name="q2" value="1" onChange={handleChange} />
-                  {renderAnswerGif("q2", "1")}
-                </li>
-                <li>
-                 <p> Okay</p>
-                  <input type="radio" name="q2" value="2" onChange={handleChange} />
-                  {renderAnswerGif("q2", "2")}
-                </li>
-              </ul>
-            </div>
-
-            {/* Q3 */}
-            <div className="Q3">
-              <span>What does it mean to use good language?</span>
-              <ul>
-                <li>
-                 <p> Using rude words</p>
-                  <input type="radio" name="q3" value="0" onChange={handleChange} />
-                  {renderAnswerGif("q3", "0")}
-                </li>
-                <li>
-                  <p>Being quiet</p>
-                  <input type="radio" name="q3" value="1" onChange={handleChange} />
-                  {renderAnswerGif("q3", "1")}
-                </li>
-                <li>
-                 <p> Using nice words</p>
-                  <input type="radio" name="q3" value="2" onChange={handleChange} />
-                  {renderAnswerGif("q3", "2")}
-                </li>
-              </ul>
-            </div>
-
             {/* Submit */}
             <button type="button" id="submitBtn" onClick={handleSubmit}>
               Submit
@@ -159,10 +160,10 @@ export const QuizPage = () => {
               </button>
             )}
 
-            {showtry &&(
-            <button className="try-btn" onClick={handleTryAgain}>
-              Try again
-            </button>
+            {showtry && (
+              <button className="try-btn" onClick={handleTryAgain}>
+                Try again
+              </button>
             )}
 
           </div>

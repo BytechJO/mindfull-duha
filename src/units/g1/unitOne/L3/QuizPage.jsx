@@ -81,6 +81,7 @@ export const QuizPage = () => {
 
           <div className="content">
 
+            <div className="questions">
             {/* Q1 */}
             <div className="Q1">
               <span>Who does the right thing at the beginning of the story?</span>
@@ -145,6 +146,7 @@ export const QuizPage = () => {
                   {renderAnswerGif("q3", "2")}
                 </li>
               </ul>
+            </div>
             </div>
 
             {/* Submit */}

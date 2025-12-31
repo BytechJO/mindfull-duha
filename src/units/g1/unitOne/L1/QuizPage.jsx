@@ -86,22 +86,23 @@ export const QuizPage = () => {
 
           <div className="content">
 
+            <div className="questions">
             {/* Q1 */}
             <div className="Q1">
               <span>How did Kate feel in the beginning of the story?</span>
               <ul>
                 <li>
-                  Sad and angry
+                  <p>Sad and angry</p> 
                   <input type="radio" name="q1" value="0" onChange={handleChange} />
                   {renderAnswerGif("q1", "0")}
                 </li>
                 <li>
-                  Happy
+                  <p>Happy</p> 
                   <input type="radio" name="q1" value="1" onChange={handleChange} />
                   {renderAnswerGif("q1", "1")}
                 </li>
                 <li>
-                  Tired
+                  <p>Tired</p> 
                   <input type="radio" name="q1" value="2" onChange={handleChange} />
                   {renderAnswerGif("q1", "2")}
                 </li>
@@ -113,17 +114,17 @@ export const QuizPage = () => {
               <span>Why did Kate need less help than May?</span>
               <ul>
                 <li>
-                  Mum loved May more
+                  <p>Mum loved May more</p> 
                   <input type="radio" name="q2" value="0" onChange={handleChange} />
                   {renderAnswerGif("q2", "0")}
                 </li>
                 <li>
-                  Kate was a big girl
+                  <p>Kate was a big girl</p> 
                   <input type="radio" name="q2" value="1" onChange={handleChange} />
                   {renderAnswerGif("q2", "1")}
                 </li>
                 <li>
-                  May watched TV
+                  <p>May watched TV</p> 
                   <input type="radio" name="q2" value="2" onChange={handleChange} />
                   {renderAnswerGif("q2", "2")}
                 </li>
@@ -135,23 +136,23 @@ export const QuizPage = () => {
               <span>What did Kate ask her mum to help her with?</span>
               <ul>
                 <li>
-                  Clean her room
+                  <p>Clean her room</p> 
                   <input type="radio" name="q3" value="0" onChange={handleChange} />
                   {renderAnswerGif("q3", "0")}
                 </li>
                 <li>
-                  Feed May
+                  <p>Feed May</p> 
                   <input type="radio" name="q3" value="1" onChange={handleChange} />
                   {renderAnswerGif("q3", "1")}
                 </li>
                 <li>
-                  Bake a cake
+                  <p>Bake a cake</p> 
                   <input type="radio" name="q3" value="2" onChange={handleChange} />
                   {renderAnswerGif("q3", "2")}
                 </li>
               </ul>
             </div>
-
+            </div>
             
 
             {/* Submit */}

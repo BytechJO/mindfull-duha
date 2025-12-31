@@ -81,6 +81,7 @@ export const QuizPage = () => {
 
           <div className="content">
 
+            <div className="questions">
             {/* Q1 */}
             <div className="Q1">
               <span>Why was Kim angry?</span>
@@ -146,7 +147,7 @@ export const QuizPage = () => {
                 </li>
               </ul>
             </div>
-
+            </div>
             {/* Submit */}
             <button type="button" id="submitBtn" onClick={handleSubmit}>
               Submit
