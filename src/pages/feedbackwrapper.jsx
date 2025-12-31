@@ -42,7 +42,7 @@ const FeedbackWrapper = () => {
 
   const handleLessonSelect = (lessonNumber) => {
     // تم تعديل الرابط ليتناسب مع بنية الـ feedback
-    navigate(`/unit/${unitId}/lesson/${lessonNumber}/feedBack`);
+    navigate(`/unit/${unitId}/lesson/${lessonNumber}`);
     // --- 3. إغلاق القائمة عند اختيار درس ---
     setIsMenuOpen(false);
   };
@@ -52,7 +52,7 @@ const FeedbackWrapper = () => {
   };
 
   const handlePrevious = () => {
-    navigate(-1);
+    navigate(-2);
   };
 
   if (!Component) return <div>feedback not found</div>;
